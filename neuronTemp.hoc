@@ -1,0 +1,41 @@
+begintemplate procCell
+public soma, nclist, updateWeights
+
+create soma
+objectvar nclist, weightList
+
+proc init() {
+
+    create soma
+
+    nclist = new List()
+
+    soma {
+      nseg = 1
+      diam = 40.0
+      L = 20.0
+      cm = 2.4
+      insert hh
+      gnabar_hh=0.022
+      gkbar_hh = .005
+      gl_hh = .0003
+      el_hh = -65.0
+    }
+
+}
+
+proc updateWeights() {
+
+
+    objectvar delta, curWeight, newWeight, weightList
+    weightList = $1
+
+    for i = 0, nclist.count() - 1 {
+        delta = weightList.object(i)
+        curWeight = nclist.object(i)
+        newWeight = curWeight + delta
+        nclist.object(i) = newWeight
+    }
+}
+
+endtemplate procCell
