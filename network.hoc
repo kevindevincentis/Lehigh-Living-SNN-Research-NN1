@@ -1,21 +1,21 @@
 load_file("neuronTemp.hoc")
 
 begintemplate fullLayer
-public cellArray, input, inputs, outCell
+public cellArray, input, inputs, outCells
 
-objectvar cellArray[1], syn[1], inputs[1], inputSyn[1], r, outCell
-double    imgLam[1]
-e_inhibit = -60
-e_excite = 0
-numNeurons = 0
+objectvar cellArray[1], syn[1], inputs[1], inputSyn[1], r, outCells[1]
+objectvar outSyn[1]
 
-proc init() {
-
+proc init() {local w
     numNeurons = $1
+    e_inhibit = -60
+    e_excite = 0
+    nDigits = 10
 
-    objectvar cellArray[numNeurons], outCell
-    objectvar syn[numNeurons]
-    objectvar inputs[numNeurons], inputSyn[numNeurons]
+    objectvar cellArray[numNeurons], outCells[nDigits]
+    objectvar syn[numNeurons * nDigits]
+    objectvar outSyn[nDigits * nDigits]
+    objectvar inputs[numNeurons], inputSyn[numNeurons*nDigits]
 
     objref r
     r = new Random()
@@ -24,30 +24,52 @@ proc init() {
         cellArray[i] = new procCell()
     }
 
-    outCell = new procCell()
-
-    r.uniform(0, 1)
-    for cur = 0, numNeurons-1 {
-        outCell.soma syn[cur] = new ExpSyn(0)
-        syn[cur].e = e_excite
-        cellArray[cur].soma outCell.nclist.append(new NetCon(&v(1), syn[cur], 0, 1, r.repick()))
+    for i = 0, nDigits - 1 {
+        outCells[i] = new procCell()
     }
 
+    // create excitory connections from input to main layer
+    r.uniform(0, 1)
     for i = 0, numNeurons - 1 {
-        cellArray[i].soma inputSyn[i] = new ExpSyn(0)
-        inputSyn[i].e = e_excite
         inputs[i] = new NetStim(1)
         inputs[i].noise = 1
         inputs[i].start = 5
-        cellArray[i].nclist.append(new NetCon(inputs[i], inputSyn[i], -20, 1, 0.5))
+
+        for dest = 0, nDigits - 1{
+            w = nDigits*i + dest
+            outCells[dest].soma inputSyn[w] = new ExpSyn(0)
+            inputSyn[w].e = e_excite
+            outCells[dest].nclist.append(new NetCon(inputs[i], inputSyn[w], -20, 0, r.repick()))
+        }
     }
+
+    // // Create excitory connections from main layer to output layer
+    // r.uniform(0, 1)
+    // for cur = 0, numNeurons-1 {
+    //     for dest = 0, nDigits - 1{
+    //         outCells[dest].soma syn[cur*nDigits + dest] = new ExpSyn(0)
+    //         syn[cur*nDigits + dest].e = e_excite
+    //         cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], 0, 1, r.repick()))
+    //     }
+    // }
+
+    // Create inhibitory connections in the output layer
+    for cur = 0, nDigits-1 {
+        for dest = 0, nDigits-1 {
+            if (cur == dest) {continue}
+            outCells[dest].soma outSyn[cur*nDigits + dest] = new ExpSyn(0)
+            outSyn[cur*nDigits + dest].e = e_inhibit
+            outCells[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), outSyn[cur*dest + dest], -60, 1, 10))
+
+        }
+    }
+
 }
 
-proc input() {
-    double imgLam[numNeurons]
-    imgLam = $1
-    for i = 0, numNeurons - 1 {
-        inputs[i].interval = 1.0/(imgLam[i])
+proc input() {local i
+    for i = 0, numNeurons-1 {
+        w = $&1[i]
+        inputs[i].interval = (1.0)/(w)
     }
 }
 

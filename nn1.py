@@ -15,11 +15,11 @@ h('double img[numInputs]')
 for i in range(len(images[0])):
     h.img[i] = images[0][i]
 
-h('nn.input(img)')
+h('nn.input(&img)')
 
-h('access nn.outCell.soma')
+h('access nn.outCells[0].soma')
 
-h.tstop = 30
+h.tstop = 15
 print "About to RUN"
 
 h.run()
@@ -27,5 +27,3 @@ h.run()
 try:
     input('Exit by pressing a key')
 except: SyntaxError
-
-h.run()
