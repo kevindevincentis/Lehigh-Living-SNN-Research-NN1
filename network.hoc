@@ -1,9 +1,9 @@
 load_file("neuronTemp.hoc")
 
 begintemplate fullLayer
-public cellArray, input, inputs
+public cellArray, input, inputs, outCell
 
-objectvar cellArray[1], syn[1], inputs[1], inputSyn[1], r
+objectvar cellArray[1], syn[1], inputs[1], inputSyn[1], r, outCell
 double    imgLam[1]
 e_inhibit = -60
 e_excite = 0
@@ -13,8 +13,8 @@ proc init() {
 
     numNeurons = $1
 
-    objectvar cellArray[numNeurons]
-    objectvar syn[numNeurons*(numNeurons - 1)]
+    objectvar cellArray[numNeurons], outCell
+    objectvar syn[numNeurons]
     objectvar inputs[numNeurons], inputSyn[numNeurons]
 
     objref r
@@ -24,16 +24,13 @@ proc init() {
         cellArray[i] = new procCell()
     }
 
-    r.uniform(0, 1) // not as efficient as
+    outCell = new procCell()
+
+    r.uniform(0, 1)
     for cur = 0, numNeurons-1 {
-        for next = 0, numNeurons-1 {
-            if (cur == next) {
-                continue
-            }
-            cellArray[next].soma syn[cur*next + next] = new ExpSyn(0)
-            syn[cur*next + next].e = e_inhibit
-            cellArray[cur].soma cellArray[next].nclist.append(new NetCon(&v(1), syn[cur*next + next], 0, 1, r.repick()))
-        }
+        outCell.soma syn[cur] = new ExpSyn(0)
+        syn[cur].e = e_excite
+        cellArray[cur].soma outCell.nclist.append(new NetCon(&v(1), syn[cur], 0, 1, r.repick()))
     }
 
     for i = 0, numNeurons - 1 {
@@ -50,7 +47,7 @@ proc input() {
     double imgLam[numNeurons]
     imgLam = $1
     for i = 0, numNeurons - 1 {
-        inputs[i].interval = 1.0/(imgLam[i] + 1)
+        inputs[i].interval = 1.0/(imgLam[i])
     }
 }
 

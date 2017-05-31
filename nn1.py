@@ -17,6 +17,8 @@ for i in range(len(images[0])):
 
 h('nn.input(img)')
 
+h('access nn.outCell.soma')
+
 h.tstop = 30
 print "About to RUN"
 
