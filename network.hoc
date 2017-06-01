@@ -6,7 +6,7 @@ public cellArray, input, inputs, outCells
 objectvar cellArray[1], syn[1], inputs[1], inputSyn[1], r, outCells[1]
 objectvar outSyn[1]
 
-proc init() {local w
+proc init() {
     numNeurons = $1
     e_inhibit = -60
     e_excite = 0
@@ -15,7 +15,7 @@ proc init() {local w
     objectvar cellArray[numNeurons], outCells[nDigits]
     objectvar syn[numNeurons * nDigits]
     objectvar outSyn[nDigits * nDigits]
-    objectvar inputs[numNeurons], inputSyn[numNeurons*nDigits]
+    objectvar inputs[numNeurons], inputSyn[numNeurons]
 
     objref r
     r = new Random()
@@ -29,29 +29,26 @@ proc init() {local w
     }
 
     // create excitory connections from input to main layer
-    r.uniform(0, 1)
     for i = 0, numNeurons - 1 {
+
+        cellArray[i].soma inputSyn[i] = new ExpSyn(0)
+        inputSyn[i].e = e_excite
         inputs[i] = new NetStim(1)
         inputs[i].noise = 1
         inputs[i].start = 5
-
-        for dest = 0, nDigits - 1{
-            w = nDigits*i + dest
-            outCells[dest].soma inputSyn[w] = new ExpSyn(0)
-            inputSyn[w].e = e_excite
-            outCells[dest].nclist.append(new NetCon(inputs[i], inputSyn[w], -20, 0, r.repick()))
-        }
+        cellArray[i].nclist.append(new NetCon(inputs[i], inputSyn[i], -20, 1, 1))
     }
 
-    // // Create excitory connections from main layer to output layer
-    // r.uniform(0, 1)
-    // for cur = 0, numNeurons-1 {
-    //     for dest = 0, nDigits - 1{
-    //         outCells[dest].soma syn[cur*nDigits + dest] = new ExpSyn(0)
-    //         syn[cur*nDigits + dest].e = e_excite
-    //         cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], 0, 1, r.repick()))
-    //     }
-    // }
+    // Create excitory connections from main layer to output layer
+    r.uniform(0, 1)
+    for cur = 0, numNeurons-1 {
+        for dest = 0, nDigits - 1{
+            outCells[dest].soma syn[cur*nDigits + dest] = new ExpSyn(0)
+            syn[cur*nDigits + dest].e = e_excite
+            cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], 20, 1, r.repick()))
+            if (cur == 0) {print outCells[dest].nclist.object(0).weight}
+        }
+    }
 
     // Create inhibitory connections in the output layer
     for cur = 0, nDigits-1 {
@@ -59,8 +56,7 @@ proc init() {local w
             if (cur == dest) {continue}
             outCells[dest].soma outSyn[cur*nDigits + dest] = new ExpSyn(0)
             outSyn[cur*nDigits + dest].e = e_inhibit
-            outCells[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), outSyn[cur*dest + dest], -60, 1, 10))
-
+            outCells[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), outSyn[cur*dest + dest], -60, 1, 1))
         }
     }
 
