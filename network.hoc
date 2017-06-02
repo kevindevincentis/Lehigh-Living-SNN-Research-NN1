@@ -8,7 +8,7 @@ objectvar outSyn[1]
 
 proc init() {
     numNeurons = $1
-    e_inhibit = -60
+    e_inhibit = -80
     e_excite = 0
     nDigits = 10
 
@@ -41,14 +41,15 @@ proc init() {
 
     // Create excitory connections from main layer to output layer
 
+    r = new Random()
     for dest = 0, nDigits - 1{
-        r.normal(dest/10.0, 0.02)
+        w = r.normal(dest/10.0, 0.02)
         for cur = 0, numNeurons-1 {
             w = r.repick()
+            print w
             outCells[dest].soma syn[cur*nDigits + dest] = new ExpSyn(0)
             syn[cur*nDigits + dest].e = e_excite
             cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], 20, 1, w))
-            print outCells[dest].nclist.object(0).weight
         }
     }
 
