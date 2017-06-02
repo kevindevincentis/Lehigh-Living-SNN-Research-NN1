@@ -46,7 +46,6 @@ proc init() {
         w = r.normal(dest/10.0, 0.02)
         for cur = 0, numNeurons-1 {
             w = r.repick()
-            print w
             outCells[dest].soma syn[cur*nDigits + dest] = new ExpSyn(0)
             syn[cur*nDigits + dest].e = e_excite
             cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], 20, 1, w))
