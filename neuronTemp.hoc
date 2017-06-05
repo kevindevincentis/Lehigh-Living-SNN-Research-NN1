@@ -18,7 +18,7 @@ proc init() {
       insert hh
       ek = -80.0
       ena = 55
-      gnabar_hh=0.022
+      gnabar_hh=0.122
       gkbar_hh = .005
       gl_hh = .0003
       el_hh = -65.0

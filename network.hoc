@@ -40,7 +40,6 @@ proc init() {
     }
 
     // Create excitory connections from main layer to output layer
-
     r = new Random()
     for dest = 0, nDigits - 1{
         w = r.normal(dest/10.0, 0.02)
@@ -48,7 +47,7 @@ proc init() {
             w = r.repick()
             outCells[dest].soma syn[cur*nDigits + dest] = new ExpSyn(0)
             syn[cur*nDigits + dest].e = e_excite
-            cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], 20, 1, w))
+            cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], 25, 1, w))
         }
     }
 
