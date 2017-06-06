@@ -1,7 +1,7 @@
 load_file("neuronTemp.hoc")
 
 begintemplate fullLayer
-public cellArray, input, inputs, outCells
+public cellArray, input, inputs, outCells, numNeurons
 
 objectvar cellArray[1], syn[1], inputs[1], inputSyn[1], r, outCells[1]
 objectvar outSyn[1]
@@ -41,10 +41,12 @@ proc init() {
 
     // Create excitory connections from main layer to output layer
     r = new Random()
-    for dest = 0, nDigits - 1{
+    for dest = 0, nDigits - 1 {
         w = r.normal(dest/10.0, 0.02)
         for cur = 0, numNeurons-1 {
+
             w = r.repick()
+            while (w <= 0) {w = r.repick()}
             outCells[dest].soma syn[cur*nDigits + dest] = new ExpSyn(0)
             syn[cur*nDigits + dest].e = e_excite
             cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], 25, 1, w))
@@ -57,7 +59,7 @@ proc init() {
             if (cur == dest) {continue}
             outCells[dest].soma outSyn[cur*nDigits + dest] = new ExpSyn(0)
             outSyn[cur*nDigits + dest].e = e_inhibit
-            outCells[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), outSyn[cur*dest + dest], -60, 1, 1))
+            outCells[cur].soma outCells[dest].Inclist.append(new NetCon(&v(1), outSyn[cur*dest + dest], -60, 1, 1))
         }
     }
 
