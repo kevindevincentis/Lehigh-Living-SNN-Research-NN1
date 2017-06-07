@@ -1,5 +1,5 @@
 begintemplate procCell
-public soma, nclist, updateWeights, Inclist
+public soma, nclist, updateWeights, Inclist, setWeights
 
 create soma
 objectvar nclist, weightList, Inclist, weights
@@ -33,6 +33,13 @@ proc updateWeights() {local i, delta, curWeight, newWeight
         delta = $&1[i]
         curWeight = nclist.object(i).weight
         newWeight = curWeight + delta
+        nclist.object(i).weight = newWeight
+    }
+}
+
+proc setWeights() {local i, newWeight
+    for i = 0, nclist.count()-1 {
+        newWeight = $&1[i]
         nclist.object(i).weight = newWeight
     }
 }

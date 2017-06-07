@@ -3,7 +3,7 @@ import scipy.io as sio
 from matplotlib import pyplot
 
 def train_network(h):
-    threshold = 0
+    threshold = 20
     vals = sio.loadmat('../MNIST/training_values.mat')
     images = vals['images']
     imgLen = len(images[0])
@@ -72,7 +72,7 @@ def train(outputs, truth, nWeights):
     bestT = min(outputs)
     nNeurons = len(outputs)
     out = 0
-    rate = 0.05
+    rate = 0.1
     weightDetlas = [ ([0] * nWeights) for neuron in range(nNeurons) ]
     posDelta = [rate] * nWeights
     negDelta = [-rate] * nWeights
