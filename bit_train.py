@@ -72,7 +72,7 @@ def train(outputs, truth, nWeights):
     bestT = min(outputs)
     nNeurons = len(outputs)
     out = 0
-    rate = 0.1
+    rate = 0.01
     weightDetlas = [ ([0] * nWeights) for neuron in range(nNeurons) ]
     posDelta = [rate] * nWeights
     negDelta = [-rate] * nWeights
