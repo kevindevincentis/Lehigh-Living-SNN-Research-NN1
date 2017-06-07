@@ -3,7 +3,7 @@ import scipy.io as sio
 from matplotlib import pyplot
 
 def train_network(h):
-    threshold = 20
+    threshold = 10
     vals = sio.loadmat('../MNIST/training_values.mat')
     images = vals['images']
     imgLen = len(images[0])
@@ -24,7 +24,7 @@ def train_network(h):
     for i in range(10):
         outputs.append(h.Vector())
 
-    for cur in range(len(images)):
+    for cur in range(len(images)/6):
         print "Training image: %d" %cur
 
         for i in range(imgLen):

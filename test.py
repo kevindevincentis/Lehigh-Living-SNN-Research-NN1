@@ -6,9 +6,9 @@ images = vals['images']
 
 h('''load_file("network.hoc")
 objref nn
-nn = new fullLayer(1)''')
+nn = new fullLayer(28*28)''')
 
-img = [1]
+img = images[0]
 h('numInputs = 1')
 h.numInputs = len(img)
 h('double img[numInputs]')

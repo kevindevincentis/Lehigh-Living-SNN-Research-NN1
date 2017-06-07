@@ -14,7 +14,7 @@ labels = labels[0]
 
 weights = sio.loadmat('./trained_weights.mat')
 weights = weights['allWeights']
-
+print weights
 h('nWeights = nn.numNeurons')
 h('double update[nWeights]')
 h('k = 0')
@@ -30,44 +30,44 @@ h('numInputs = 1')
 h.numInputs = imgLen
 h('double img[numInputs]')
 
-cur = 6
-for i in range(imgLen):
-    h.img[i] = images[cur][i]
+for cur in range(10):
+    for i in range(imgLen):
+        h.img[i] = images[cur][i]
 
-h('nn.input(&img)')
+    h('nn.input(&img)')
 
-h.tstop = 15
+    h.tstop = 15
 
-t_vec = h.Vector()
-t_vec.record(h._ref_t)
+    t_vec = h.Vector()
+    t_vec.record(h._ref_t)
 
-outputs = list()
-for i in range(10):
-    outputs.append(h.Vector())
+    outputs = list()
+    for i in range(10):
+        outputs.append(h.Vector())
 
-for i in range(10):
-    outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
+    for i in range(10):
+        outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
 
-h.run()
+    h.run()
 
-done = True
-foundWin = False
-t_truth = 0
-spike_times = [0] * len(outputs)
-threshold = 15
-for i in range(len(outputs[0])):
     done = True
-    for j in range(10):
-        if outputs[j][i] >= threshold:
-            if not foundWin:
-                print "Winner is %d" %j
-                print "Truth: %d" %labels[cur]
-                foundWin = True
-                t_truth = i/40.0
-            if spike_times[j] == 0: spike_times[j] = i/40.0
-        if spike_times[j] == 0: done = False
-    if done: break
-print spike_times
+    foundWin = False
+    t_truth = 0
+    spike_times = [0] * len(outputs)
+    threshold = 15
+    for i in range(len(outputs[0])):
+        done = True
+        for j in range(10):
+            if outputs[j][i] >= threshold:
+                if not foundWin:
+                    print "Winner is %d" %j
+                    print "Truth: %d" %labels[cur]
+                    foundWin = True
+                    t_truth = i/40.0
+                if spike_times[j] == 0: spike_times[j] = i/40.0
+            if spike_times[j] == 0: done = False
+        if done: break
+    print spike_times
 try:
     input('Exit by pressing a key')
 except: SyntaxError
