@@ -14,14 +14,14 @@ proc init() {
 
     soma {
       nseg = 1
-      diam = 40.0
+      diam = 10.0
       L = 20.0
       cm = 2.4
       insert hh
       ek = -80.0
       ena = 55
       gnabar_hh=0.122
-      gkbar_hh = .005
+      gkbar_hh = .05
       gl_hh = .0003
       el_hh = -65.0
     }

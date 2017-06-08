@@ -34,9 +34,10 @@ proc init() {
         cellArray[i].soma inputSyn[i] = new ExpSyn(0)
         inputSyn[i].e = e_excite
         inputs[i] = new NetStim(1)
-        inputs[i].noise = 1
+        inputs[i].noise = 0
         inputs[i].start = 5
-        cellArray[i].nclist.append(new NetCon(inputs[i], inputSyn[i], -20, 1, 1))
+        inputs[i].number = 15
+        cellArray[i].nclist.append(new NetCon(inputs[i], inputSyn[i], 0, 1, 1))
     }
 
     // Create excitory connections from main layer to output layer
@@ -49,7 +50,7 @@ proc init() {
             while (w <= 0) {w = r.repick()}
             outCells[dest].soma syn[cur*nDigits + dest] = new ExpSyn(0)
             syn[cur*nDigits + dest].e = e_excite
-            cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], 25, 1, w))
+            cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], 15, 1, w))
         }
     }
 
