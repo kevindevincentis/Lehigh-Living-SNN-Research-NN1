@@ -52,22 +52,27 @@ for cur in range(10):
 
     done = True
     foundWin = False
-    t_truth = 0
-    spike_times = [0] * len(outputs)
-    threshold = 15
+    threshold = 20
+    spike_freq = [0] * len(outputs)
     for i in range(len(outputs[0])):
         done = True
         for j in range(10):
             if outputs[j][i] >= threshold:
-                if not foundWin:
-                    print "Winner is %d" %j
-                    print "Truth: %d" %labels[cur]
-                    foundWin = True
-                    t_truth = i/40.0
-                if spike_times[j] == 0: spike_times[j] = i/40.0
-            if spike_times[j] == 0: done = False
-        if done: break
-    print spike_times
+                spike_freq[j] += 1
+
+    print spike_freq
+
+    best_freq = max(spike_freq)
+
+    winners = list()
+    for i in range(len(spike_freq)):
+        if (spike_freq[i] == best_freq): winners.append(i)
+
+    truth = labels[cur]
+
+    print "TRUTH: %d " %truth
+    print "WINNERS: ",
+    print winners
 try:
     input('Exit by pressing a key')
 except: SyntaxError

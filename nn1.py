@@ -1,4 +1,4 @@
-from bit_train import train_network
+from bin_freq_train import train_network
 import scipy.io as sio
 from neuron import h, gui
 from matplotlib import pyplot

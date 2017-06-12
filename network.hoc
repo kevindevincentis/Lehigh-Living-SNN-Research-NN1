@@ -36,14 +36,14 @@ proc init() {
         inputs[i] = new NetStim(1)
         inputs[i].noise = 0
         inputs[i].start = 5
-        inputs[i].number = 15
+        inputs[i].number = 30
         cellArray[i].nclist.append(new NetCon(inputs[i], inputSyn[i], 0, 1, 1))
     }
 
     // Create excitory connections from main layer to output layer
     r = new Random()
+    w = r.normal(.1, 0.01)
     for dest = 0, nDigits - 1 {
-        w = r.normal(dest/10.0, 0.02)
         for cur = 0, numNeurons-1 {
 
             w = r.repick()

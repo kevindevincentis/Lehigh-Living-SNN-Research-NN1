@@ -6,9 +6,9 @@ objectvar ocbox_, ocbox_list_, scene_, scene_list_
 {pwman_place(0,0,0)}
 {
 save_window_ = new Graph(0)
-save_window_.size(0,300,-80,40)
+save_window_.size(0,70,-80,40)
 scene_vector_[2] = save_window_
-{save_window_.view(0, -80, 300, 120, 75, 599, 1742.4, 355.84)}
+{save_window_.view(0, -80, 70, 120, 75, 627, 1742.4, 355.84)}
 graphList[0].append(save_window_)
 save_window_.save_name("graphList[0].")
 save_window_.addexpr("v(.5)", 0, 1, 0.8, 0.9, 2)
@@ -30,7 +30,7 @@ xvalue("Continue for","runStopIn", 1,"{continuerun(t + runStopIn) stoprun=1}", 1
 xbutton("Single Step","steprun()")
 t = 300
 xvalue("t","t", 2 )
-tstop = 300
+tstop = 70
 xvalue("Tstop","tstop", 1,"tstop_changed()", 0, 1 )
 dt = 0.025
 xvalue("dt","dt", 1,"setdt()", 0, 1 )
@@ -40,18 +40,18 @@ screen_update_invl = 0.05
 xvalue("Scrn update invl","screen_update_invl", 1,"", 0, 1 )
 realtime = 0.2
 xvalue("Real Time","realtime", 0,"", 0, 1 )
-xpanel(1473,233)
+xpanel(1473,261)
 }
 {
 xpanel("Run", 0)
 xcheckbox("Init & Run",&running_,"runbutton()")
-xpanel(239,390)
+xpanel(239,418)
 }
 {
 save_window_ = new Graph(0)
-save_window_.size(0,300,-80,40)
+save_window_.size(0,70,-80,40)
 scene_vector_[3] = save_window_
-{save_window_.view(0, -80, 300, 120, 84, 202, 1728, 332.8)}
+{save_window_.view(0, -80, 70, 120, 84, 230, 1728, 332.8)}
 graphList[0].append(save_window_)
 save_window_.save_name("graphList[0].")
 save_window_.addexpr("v(.5)", 1, 1, 0.8, 0.9, 2)
@@ -77,7 +77,7 @@ xvalue("Continue for","runStopIn", 1,"{continuerun(t + runStopIn) stoprun=1}", 1
 xbutton("Single Step","steprun()")
 t = 300
 xvalue("t","t", 2 )
-tstop = 300
+tstop = 70
 xvalue("Tstop","tstop", 1,"tstop_changed()", 0, 1 )
 dt = 0.025
 xvalue("dt","dt", 1,"setdt()", 0, 1 )
@@ -87,7 +87,7 @@ screen_update_invl = 0.05
 xvalue("Scrn update invl","screen_update_invl", 1,"", 0, 1 )
 realtime = 0.2
 xvalue("Real Time","realtime", 0,"", 0, 1 )
-xpanel(99,52)
+xpanel(135,67)
 }
 objectvar scene_vector_[1]
 {doNotify()}
