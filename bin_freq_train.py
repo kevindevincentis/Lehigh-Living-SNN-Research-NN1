@@ -3,7 +3,7 @@ import scipy.io as sio
 from matplotlib import pyplot
 
 def train_network(h):
-    threshold = 20
+    threshold = -20
     vals = sio.loadmat('../MNIST/training_values.mat')
     images = vals['images']
     imgLen = len(images[0])
@@ -24,7 +24,7 @@ def train_network(h):
     for i in range(10):
         outputs.append(h.Vector())
 
-    for cur in range(len(images)/6):
+    for cur in range(len(images)/600):
         print "Training image: %d" %cur
 
         for i in range(imgLen):
@@ -32,7 +32,7 @@ def train_network(h):
 
         h('nn.input(&img)')
 
-        h.tstop = 70
+        h.tstop = 80
 
         t_vec.record(h._ref_t)
 
@@ -70,9 +70,9 @@ def train(truth, nWeights, inputs):
 
     for j in range(nWeights):
         for i in range(nNeurons):
-            if (inputs[j] >= 1/60.0):
-                if (i == truth): weights[i][j] = .1
-                else: weights[i][j] = 0
+            if (inputs[j] > 1/60.0):
+                if (i == truth): weights[i][j] = .0001
+                else: weights[i][j] = -0.0001
 
 
     return weights
@@ -84,4 +84,4 @@ def updateNeurons(h, updates):
 
         for j in range(int(h.nn.numNeurons)):
             h.update[j] = updates[i][j]
-        h('nn.outCells[k].setWeights(&update)')
+        h('nn.outCells[k].updateWeights(&update)')

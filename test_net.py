@@ -52,7 +52,7 @@ for cur in range(10):
 
     done = True
     foundWin = False
-    threshold = 20
+    threshold = -20
     spike_freq = [0] * len(outputs)
     for i in range(len(outputs[0])):
         done = True

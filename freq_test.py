@@ -9,6 +9,7 @@ objref nn
 nn = new fullLayer(28*28)''')
 
 img = images[0]
+img[1] = 1.0/20
 h('numInputs = 1')
 h.numInputs = len(img)
 h('double img[numInputs]')
@@ -22,7 +23,7 @@ h('nn.input(&img)')
 
 h('access nn.outCells[0].soma')
 
-h.tstop = 70
+h.tstop = 85
 print "About to RUN"
 
 h.run()
