@@ -4,7 +4,7 @@ from matplotlib import pyplot
 
 h('''load_file("network.hoc")
 objref nn
-nn = new fullLayer(28*28)''')
+nn = new fullLayer(14*14)''')
 
 vals = sio.loadmat('../MNIST/testing_values.mat')
 images = vals['images']
@@ -14,6 +14,9 @@ labels = labels[0]
 
 weights = sio.loadmat('./trained_weights.mat')
 weights = weights['allWeights']
+for i in weights:
+    for j in i:
+        if (j < 0): print "SDFKLDSJ:FKJSDLKFJKLSJD"
 print weights
 h('nWeights = nn.numNeurons')
 h('double update[nWeights]')
@@ -30,13 +33,15 @@ h('numInputs = 1')
 h.numInputs = imgLen
 h('double img[numInputs]')
 
-for cur in range(10):
+wins = 0.0
+confusion = [ ([0] * 10) for neuron in range(10) ]
+for cur in range(1000):
     for i in range(imgLen):
         h.img[i] = images[cur][i]
 
     h('nn.input(&img)')
 
-    h.tstop = 15
+    h.tstop = 80
 
     t_vec = h.Vector()
     t_vec.record(h._ref_t)
@@ -73,6 +78,27 @@ for cur in range(10):
     print "TRUTH: %d " %truth
     print "WINNERS: ",
     print winners
+
+    if winners[0] == truth:
+        wins += 1.0
+    print "Wins rate: %d" %(wins)
+    print "Trials: %d" %(cur)
+
+    confusion[winners[0]][truth] += 1
+
+print confusion[0]
+print confusion[1]
+print confusion[2]
+print confusion[3]
+print confusion[4]
+print confusion[5]
+print confusion[6]
+print confusion[7]
+print confusion[8]
+print confusion[9]
+
+
+
 try:
     input('Exit by pressing a key')
 except: SyntaxError

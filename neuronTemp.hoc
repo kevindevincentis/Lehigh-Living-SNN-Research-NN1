@@ -33,6 +33,7 @@ proc updateWeights() {local i, delta, curWeight, newWeight
         delta = $&1[i]
         curWeight = nclist.object(i).weight
         newWeight = curWeight + delta
+        if (newWeight < 0) {newWeight = 0}
         nclist.object(i).weight = newWeight
     }
 }
@@ -40,6 +41,7 @@ proc updateWeights() {local i, delta, curWeight, newWeight
 proc setWeights() {local i, newWeight
     for i = 0, nclist.count()-1 {
         newWeight = $&1[i]
+        if (newWeight < 0) {newWeight = 0}
         nclist.object(i).weight = newWeight
     }
 }

@@ -5,10 +5,10 @@ from matplotlib import pyplot
 
 h('''load_file("network.hoc")
 objref nn
-nn = new fullLayer(28*28)''')
+nn = new fullLayer(14*14)''')
 
 train_network(h)
-allWeights = [ ([0] * 784) for neuron in range(10) ]
+allWeights = [ ([0] * 196) for neuron in range(10) ]
 for i in range(10):
     allWeights[i] = list(h.nn.outCells[i].getWeights())
 

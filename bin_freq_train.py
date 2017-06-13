@@ -1,6 +1,7 @@
 import scipy.io as sio
-# from neuron import h, gui
 from matplotlib import pyplot
+from back_prop import calc_weight_changes
+
 
 def train_network(h):
     threshold = -20
@@ -24,7 +25,7 @@ def train_network(h):
     for i in range(10):
         outputs.append(h.Vector())
 
-    for cur in range(len(images)/600):
+    for cur in range(len(images)):
         print "Training image: %d" %cur
 
         for i in range(imgLen):
@@ -49,33 +50,21 @@ def train_network(h):
         #     ax = axarr[i]
         #     ax.plot(t_vec, outputs[i])
 
-        # done = True
-        # foundWin = False
-        # spike_freq = [0] * len(outputs)
-        # for i in range(len(outputs[0])):
-        #     done = True
-        #     for j in range(10):
-        #         if outputs[j][i] >= threshold:
-        #             spike_freq[j] += 1
-        #
-        # print spike_freq
+        foundWin = False
+        spike_freq = [0] * len(outputs)
+        for i in range(len(outputs[0])):
+            for j in range(10):
+                if outputs[j][i] >= threshold:
+                    spike_freq[j] += 1.0/(h.tstop * 40)
 
-        updates = train(labels[cur], int(h.nn.numNeurons), images[cur])
+        updates = train(spike_freq, labels[cur], int(h.nn.numNeurons), images[cur])
 
         updateNeurons(h, updates)
 
-def train(truth, nWeights, inputs):
-    nNeurons = 10
-    weights = [ ([0] * nWeights) for neuron in range(nNeurons) ]
-
-    for j in range(nWeights):
-        for i in range(nNeurons):
-            if (inputs[j] > 1/60.0):
-                if (i == truth): weights[i][j] = .0001
-                else: weights[i][j] = -0.0001
-
-
-    return weights
+def train(outputs, truth, nWeights, img):
+    truths = [.04] * 10
+    truths[truth] = .31
+    return calc_weight_changes(outputs, truths, img)
 
 def updateNeurons(h, updates):
     h('double update[nWeights]')
