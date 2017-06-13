@@ -3,12 +3,31 @@ from neuron import h, gui
 
 vals = sio.loadmat('../MNIST/training_values.mat')
 images = vals['images']
+labels = vals['labels']
+labels = labels[0]
+
+weights = sio.loadmat('training_resutls/weights_30_perc.mat')
+weights = weights['allWeights']
+
 
 h('''load_file("network.hoc")
 objref nn
 nn = new fullLayer(28*28)''')
 
-img = [1.0/20] * 784
+h('nWeights = nn.numNeurons')
+h('double update[nWeights]')
+h('k = 0')
+
+for i in range(len(weights)):
+    h.k = i
+
+    for j in range(int(h.nn.numNeurons)):
+        h.update[j] = weights[i][j]
+    h('nn.outCells[k].setWeights(&update)')
+
+cur = 3
+
+img = images[cur]
 h('numInputs = 1')
 h.numInputs = len(img)
 h('double img[numInputs]')
@@ -46,6 +65,18 @@ for i in range(len(outputs[0])):
             spike_freq[j] += 1
 
 print spike_freq
+
+best_freq = max(spike_freq)
+
+winners = list()
+for i in range(len(spike_freq)):
+    if (spike_freq[i] == best_freq): winners.append(i)
+
+truth = labels[cur]
+
+print "TRUTH: %d " %truth
+print "WINNERS: ",
+print winners
 
 try:
     input('Exit by pressing a key')

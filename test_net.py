@@ -4,7 +4,7 @@ from matplotlib import pyplot
 
 h('''load_file("network.hoc")
 objref nn
-nn = new fullLayer(14*14)''')
+nn = new fullLayer(28*28)''')
 
 vals = sio.loadmat('../MNIST/testing_values.mat')
 images = vals['images']
@@ -14,9 +14,6 @@ labels = labels[0]
 
 weights = sio.loadmat('./trained_weights.mat')
 weights = weights['allWeights']
-for i in weights:
-    for j in i:
-        if (j < 0): print "SDFKLDSJ:FKJSDLKFJKLSJD"
 print weights
 h('nWeights = nn.numNeurons')
 h('double update[nWeights]')
@@ -35,7 +32,7 @@ h('double img[numInputs]')
 
 wins = 0.0
 confusion = [ ([0] * 10) for neuron in range(10) ]
-for cur in range(1000):
+for cur in range(100):
     for i in range(imgLen):
         h.img[i] = images[cur][i]
 
@@ -86,18 +83,8 @@ for cur in range(1000):
 
     confusion[winners[0]][truth] += 1
 
-print confusion[0]
-print confusion[1]
-print confusion[2]
-print confusion[3]
-print confusion[4]
-print confusion[5]
-print confusion[6]
-print confusion[7]
-print confusion[8]
-print confusion[9]
-
-
+print('\n'.join([''.join(['{:4}'.format(item) for item in row])
+      for row in confusion]))
 
 try:
     input('Exit by pressing a key')

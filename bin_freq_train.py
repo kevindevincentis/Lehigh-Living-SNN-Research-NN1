@@ -25,7 +25,7 @@ def train_network(h):
     for i in range(10):
         outputs.append(h.Vector())
 
-    for cur in range(len(images)):
+    for cur in range(len(images)/6):
         print "Training image: %d" %cur
 
         for i in range(imgLen):
