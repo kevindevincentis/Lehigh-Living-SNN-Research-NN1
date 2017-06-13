@@ -1,7 +1,7 @@
 # Code adpated from https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/
 def calc_weight_changes(outputs, truths, inputs):
     LEARNING_RATE = 0.25
-    nWeights = 784
+    nWeights = 196
     return train(outputs, truths, inputs, nWeights, LEARNING_RATE)
 
 def train(outputs, truths, inputs, nWeights, LEARNING_RATE):

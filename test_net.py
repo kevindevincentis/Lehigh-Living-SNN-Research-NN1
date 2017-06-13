@@ -4,9 +4,9 @@ from matplotlib import pyplot
 
 h('''load_file("network.hoc")
 objref nn
-nn = new fullLayer(28*28)''')
+nn = new fullLayer(14*14)''')
 
-vals = sio.loadmat('../MNIST/testing_values.mat')
+vals = sio.loadmat('../MNIST/testing_values_compressed.mat')
 images = vals['images']
 imgLen = len(images[0])
 labels = vals['labels']

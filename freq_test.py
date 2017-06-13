@@ -1,7 +1,7 @@
 import scipy.io as sio
 from neuron import h, gui
 
-vals = sio.loadmat('../MNIST/training_values.mat')
+vals = sio.loadmat('../MNIST/training_values_compressed.mat')
 images = vals['images']
 labels = vals['labels']
 labels = labels[0]
