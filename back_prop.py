@@ -1,7 +1,8 @@
 # Code adpated from https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/
 def calc_weight_changes(outputs, truths, inputs):
-    LEARNING_RATE = 0.25
+    LEARNING_RATE = 100
     nWeights = 196
+    print calculate_total_error(outputs, truths)
     return train(outputs, truths, inputs, nWeights, LEARNING_RATE)
 
 def train(outputs, truths, inputs, nWeights, LEARNING_RATE):
@@ -20,21 +21,20 @@ def train(outputs, truths, inputs, nWeights, LEARNING_RATE):
         for w_ho in range(nWeights):
 
             inp = inputs[w_ho]
-            if (inp > 1.0/60): inp = 0.1*3200
-            else: inp = 0.03*3200
+            if (inp > 1.0/60): inp = 0.1
+            else: inp = 0.03
             pd_error_wrt_weight = pd_errors_wrt_output_neuron_total_net_input[o] * inp
 
             weightDetlas[o][w_ho] -= LEARNING_RATE * pd_error_wrt_weight
+            # print weightDetlas[o][w_ho]
 
     return weightDetlas
 
-def calculate_total_error(training_sets):
+def calculate_total_error(outputs, truths):
     total_error = 0
-    for t in range(len(training_sets)):
-        training_inputs, truths = training_sets[t]
-        for o in range(len(truths)):
-            total_error += calculate_error(truths[o])
-    return total_error
+    for o in range(len(truths)):
+        total_error += calculate_error(outputs[o], truths[o])
+    return total_error/10.0
 
 def calculate_pd_error_wrt_total_net_input(target_output, output):
     return calculate_pd_error_wrt_output(output, target_output) * calculate_pd_total_net_input_wrt_input(output);
@@ -47,4 +47,4 @@ def calculate_pd_error_wrt_output(output, target_output):
     return -(target_output - output)
 
 def calculate_pd_total_net_input_wrt_input(output):
-    return 1/3200.0
+    return 1

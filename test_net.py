@@ -32,7 +32,7 @@ h('double img[numInputs]')
 
 wins = 0.0
 confusion = [ ([0] * 10) for neuron in range(10) ]
-for cur in range(100):
+for cur in range(1000):
     for i in range(imgLen):
         h.img[i] = images[cur][i]
 
@@ -54,7 +54,7 @@ for cur in range(100):
 
     done = True
     foundWin = False
-    threshold = -20
+    threshold = 0
     spike_freq = [0] * len(outputs)
     for i in range(len(outputs[0])):
         done = True
@@ -80,6 +80,8 @@ for cur in range(100):
         wins += 1.0
     print "Wins rate: %d" %(wins)
     print "Trials: %d" %(cur)
+
+    print "Off by: %d" %(spike_freq[winners[0]] - spike_freq[truth])
 
     confusion[winners[0]][truth] += 1
 

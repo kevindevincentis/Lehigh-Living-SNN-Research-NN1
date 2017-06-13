@@ -6,13 +6,13 @@ images = vals['images']
 labels = vals['labels']
 labels = labels[0]
 
-weights = sio.loadmat('training_resutls/weights_30_perc.mat')
+weights = sio.loadmat('training_resutls/weights_30_no_log.mat')
 weights = weights['allWeights']
 
 
 h('''load_file("network.hoc")
 objref nn
-nn = new fullLayer(28*28)''')
+nn = new fullLayer(14*14)''')
 
 h('nWeights = nn.numNeurons')
 h('double update[nWeights]')
@@ -25,7 +25,7 @@ for i in range(len(weights)):
         h.update[j] = weights[i][j]
     h('nn.outCells[k].setWeights(&update)')
 
-cur = 3
+cur = 20
 
 img = images[cur]
 h('numInputs = 1')
@@ -57,7 +57,7 @@ for i in range(10):
 h.run()
 
 foundWin = False
-threshold = -20
+threshold = 0
 spike_freq = [0] * len(outputs)
 for i in range(len(outputs[0])):
     for j in range(10):

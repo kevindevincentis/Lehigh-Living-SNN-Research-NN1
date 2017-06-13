@@ -4,7 +4,7 @@ from back_prop import calc_weight_changes
 
 
 def train_network(h):
-    threshold = -20
+    threshold = 0
     vals = sio.loadmat('../MNIST/training_values_compressed.mat')
     images = vals['images']
     imgLen = len(images[0])
@@ -26,40 +26,41 @@ def train_network(h):
         outputs.append(h.Vector())
 
     for cur in range(len(images)/6):
-        print "Training image: %d" %cur
+        for b in range(1):
+            print "Training image: %d" %cur
 
-        for i in range(imgLen):
-            h.img[i] = images[cur][i]
+            for i in range(imgLen):
+                h.img[i] = images[cur][i]
 
-        h('nn.input(&img)')
+            h('nn.input(&img)')
 
-        h.tstop = 80
+            h.tstop = 80
 
-        t_vec.record(h._ref_t)
+            t_vec.record(h._ref_t)
 
-        for i in range(10):
-            outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
+            for i in range(10):
+                outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
 
 
-        h.run()
+            h.run()
 
-        # Plot output
-        # f, axarr = pyplot.subplots(10, sharex=True, sharey=True)
-        # f.figsize = (16,16)
-        # for i in range(len(axarr)):
-        #     ax = axarr[i]
-        #     ax.plot(t_vec, outputs[i])
+            # Plot output
+            # f, axarr = pyplot.subplots(10, sharex=True, sharey=True)
+            # f.figsize = (16,16)
+            # for i in range(len(axarr)):
+            #     ax = axarr[i]
+            #     ax.plot(t_vec, outputs[i])
 
-        foundWin = False
-        spike_freq = [0] * len(outputs)
-        for i in range(len(outputs[0])):
-            for j in range(10):
-                if outputs[j][i] >= threshold:
-                    spike_freq[j] += 1.0/(h.tstop * 40)
+            foundWin = False
+            spike_freq = [0] * len(outputs)
+            for i in range(len(outputs[0])):
+                for j in range(10):
+                    if outputs[j][i] >= threshold:
+                        spike_freq[j] += 1.0/(h.tstop * 40)
 
-        updates = train(spike_freq, labels[cur], int(h.nn.numNeurons), images[cur])
+            updates = train(spike_freq, labels[cur], int(h.nn.numNeurons), images[cur])
 
-        updateNeurons(h, updates)
+            updateNeurons(h, updates)
 
 def train(outputs, truth, nWeights, img):
     truths = [.04] * 10
