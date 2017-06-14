@@ -4,7 +4,7 @@ from back_prop import calc_weight_changes
 
 
 def train_network(h):
-    threshold = 0
+    threshold = -20
     vals = sio.loadmat('../MNIST/training_values_compressed.mat')
     images = vals['images']
     imgLen = len(images[0])

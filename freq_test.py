@@ -6,7 +6,7 @@ images = vals['images']
 labels = vals['labels']
 labels = labels[0]
 
-weights = sio.loadmat('training_resutls/weights_30_no_log.mat')
+weights = sio.loadmat('trained_weights.mat')
 weights = weights['allWeights']
 
 
@@ -18,14 +18,14 @@ h('nWeights = nn.numNeurons')
 h('double update[nWeights]')
 h('k = 0')
 
-for i in range(len(weights)):
-    h.k = i
+# for i in range(len(weights)):
+#     h.k = i
+#
+#     for j in range(int(h.nn.numNeurons)):
+#         h.update[j] = weights[i][j]
+#     h('nn.outCells[k].setWeights(&update)')
 
-    for j in range(int(h.nn.numNeurons)):
-        h.update[j] = weights[i][j]
-    h('nn.outCells[k].setWeights(&update)')
-
-cur = 20
+cur = 0
 
 img = images[cur]
 h('numInputs = 1')
@@ -52,12 +52,12 @@ for i in range(10):
     outputs.append(h.Vector())
 
 for i in range(10):
-    outputs[i].record(h.nn.cellArray[i].soma(0.5)._ref_v)
+    outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
 
 h.run()
 
 foundWin = False
-threshold = 0
+threshold = -20
 spike_freq = [0] * len(outputs)
 for i in range(len(outputs[0])):
     for j in range(10):
@@ -78,6 +78,7 @@ print "TRUTH: %d " %truth
 print "WINNERS: ",
 print winners
 
+h("print nn.outCells[0].nclist.object(10).weight")
 try:
     input('Exit by pressing a key')
 except: SyntaxError
