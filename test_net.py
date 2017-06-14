@@ -2,16 +2,19 @@ import scipy.io as sio
 from neuron import h, gui
 from matplotlib import pyplot
 
+# Create Network
 h('''load_file("network.hoc")
 objref nn
 nn = new fullLayer(14*14)''')
 
+# Load in the testing images and labels
 vals = sio.loadmat('../MNIST/testing_values_compressed.mat')
 images = vals['images']
 imgLen = len(images[0])
 labels = vals['labels']
 labels = labels[0]
 
+# Load in trained weights
 weights = sio.loadmat('./trained_weights.mat')
 weights = weights['allWeights']
 print weights
@@ -31,8 +34,12 @@ h.numInputs = imgLen
 h('double img[numInputs]')
 
 wins = 0.0
+# Set up a confusion matrix to keep track of performance
 confusion = [ ([0] * 10) for neuron in range(10) ]
-for cur in range(1000):
+nTrials = 1000
+# Begin looping through the testing images
+for cur in range(nTrials):
+    # Give the input image to the network
     for i in range(imgLen):
         h.img[i] = images[cur][i]
 
@@ -40,6 +47,7 @@ for cur in range(1000):
 
     h.tstop = 80
 
+    # Set up recording vectors to look at outputs
     t_vec = h.Vector()
     t_vec.record(h._ref_t)
 
@@ -50,10 +58,10 @@ for cur in range(1000):
     for i in range(10):
         outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
 
+    # Run simulation
     h.run()
 
-    done = True
-    foundWin = False
+    # Extract results from the output cells
     threshold = -20
     spike_freq = [0] * len(outputs)
     for i in range(len(outputs[0])):
@@ -66,6 +74,7 @@ for cur in range(1000):
 
     best_freq = max(spike_freq)
 
+    # Update metrics
     winners = list()
     for i in range(len(spike_freq)):
         if (spike_freq[i] == best_freq): winners.append(i)

@@ -16,10 +16,9 @@ proc init() {
     objectvar syn[numNeurons * nDigits]
     objectvar outSyn[nDigits * nDigits]
     objectvar inputs[numNeurons], inputSyn[numNeurons]
-
     objref r
-    r = new Random()
 
+    // Create necessary cells
     for i = 0, numNeurons - 1 {
         cellArray[i] = new procCell()
     }
@@ -41,6 +40,7 @@ proc init() {
     }
 
     // Create excitory connections from main layer to output layer
+    // Initialize with random weights
     r = new Random()
     w = r.normal(.01, 0.01)
     for dest = 0, nDigits - 1 {
@@ -71,6 +71,7 @@ proc input() {local i
         w = $&1[i]
         inputs[i].interval = (1.0)/(w)
         inputs[i].number = 30
+        // Low frequency inputs do not stimulate neurons
         if (w <= 1.0/50) {inputs[i].number = 0}
     }
 }

@@ -8,7 +8,6 @@ labels = labels[0]
 
 weights = sio.loadmat('trained_weights.mat')
 weights = weights['allWeights']
-print weights[0]
 
 
 h('''load_file("network.hoc")
@@ -28,7 +27,7 @@ for i in range(len(weights)):
 
 cur = 6
 
-img = images[cur]
+img = [1.0/20] * 196
 h('numInputs = 1')
 h.numInputs = len(img)
 h('double img[numInputs]')
