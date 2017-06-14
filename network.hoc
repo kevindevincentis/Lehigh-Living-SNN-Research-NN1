@@ -70,6 +70,8 @@ proc input() {local i
     for i = 0, numNeurons-1 {
         w = $&1[i]
         inputs[i].interval = (1.0)/(w)
+        inputs[i].number = 30
+        if (w <= 1.0/50) {inputs[i].number = 0}
     }
 }
 

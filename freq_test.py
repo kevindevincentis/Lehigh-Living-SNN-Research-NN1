@@ -8,6 +8,7 @@ labels = labels[0]
 
 weights = sio.loadmat('trained_weights.mat')
 weights = weights['allWeights']
+print weights[0]
 
 
 h('''load_file("network.hoc")
@@ -18,14 +19,14 @@ h('nWeights = nn.numNeurons')
 h('double update[nWeights]')
 h('k = 0')
 
-# for i in range(len(weights)):
-#     h.k = i
-#
-#     for j in range(int(h.nn.numNeurons)):
-#         h.update[j] = weights[i][j]
-#     h('nn.outCells[k].setWeights(&update)')
+for i in range(len(weights)):
+    h.k = i
 
-cur = 0
+    for j in range(int(h.nn.numNeurons)):
+        h.update[j] = weights[i][j]
+    h('nn.outCells[k].setWeights(&update)')
+
+cur = 6
 
 img = images[cur]
 h('numInputs = 1')

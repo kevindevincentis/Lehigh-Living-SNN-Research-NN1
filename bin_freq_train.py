@@ -7,7 +7,7 @@ def train_network(h):
     threshold = -20
     vals = sio.loadmat('../MNIST/training_values_compressed.mat')
     images = vals['images']
-    imgLen = len(images[0])
+    imgLen = 196
     labels = vals['labels']
     labels = labels[0]
 
@@ -25,8 +25,8 @@ def train_network(h):
     for i in range(10):
         outputs.append(h.Vector())
 
-    for cur in range(len(images)/6):
-        for b in range(1):
+    for cur in range(10000):
+        for b in range(2):
             print "Training image: %d" %cur
 
             for i in range(imgLen):
