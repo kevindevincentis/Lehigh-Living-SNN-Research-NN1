@@ -42,27 +42,27 @@ proc init() {
     // Create excitory connections from main layer to output layer
     // Initialize with random weights
     r = new Random()
-    w = r.normal(.01, 0.01)
+    w = r.normal(0, 0.001)
     for dest = 0, nDigits - 1 {
         for cur = 0, numNeurons-1 {
 
             w = r.repick()
-            while (w <= 0) {w = r.repick()}
+            while (w <= 0 || w > 0.01) {w = r.repick()}
             outCells[dest].soma syn[cur*nDigits + dest] = new ExpSyn(0)
             syn[cur*nDigits + dest].e = e_excite
-            cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], 15, 1, w))
+            cellArray[cur].soma outCells[dest].nclist.append(new NetCon(&v(1), syn[cur*nDigits + dest], -15, 5, w))
         }
     }
 
     // Create inhibitory connections in the output layer
-    for cur = 0, nDigits-1 {
-        for dest = 0, nDigits-1 {
-            if (cur == dest) {continue}
-            outCells[dest].soma outSyn[cur*nDigits + dest] = new ExpSyn(0)
-            outSyn[cur*nDigits + dest].e = e_inhibit
-            outCells[cur].soma outCells[dest].Inclist.append(new NetCon(&v(1), outSyn[cur*dest + dest], -60, 1, 1))
-        }
-    }
+    // for cur = 0, nDigits-1 {
+    //     for dest = 0, nDigits-1 {
+    //         if (cur == dest) {continue}
+    //         outCells[dest].soma outSyn[cur*nDigits + dest] = new ExpSyn(0)
+    //         outSyn[cur*nDigits + dest].e = e_inhibit
+    //         outCells[cur].soma outCells[dest].Inclist.append(new NetCon(&v(1), outSyn[cur*dest + dest], -60, 1, 0.5))
+    //     }
+    // }
 
 }
 
@@ -72,7 +72,7 @@ proc input() {local i
         inputs[i].interval = (1.0)/(w)
         inputs[i].number = 30
         // Low frequency inputs do not stimulate neurons
-        if (w <= 1.0/50) {inputs[i].number = 0}
+        if (w <= 1.0/90) {inputs[i].number = 0}
     }
 }
 

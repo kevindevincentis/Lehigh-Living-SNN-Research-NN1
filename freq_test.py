@@ -9,7 +9,7 @@ labels = labels[0]
 weights = sio.loadmat('trained_weights.mat')
 weights = weights['allWeights']
 
-
+print weights[0]
 h('''load_file("network.hoc")
 objref nn
 nn = new fullLayer(14*14)''')
@@ -25,9 +25,13 @@ for i in range(len(weights)):
         h.update[j] = weights[i][j]
     h('nn.outCells[k].setWeights(&update)')
 
-cur = 6
+cur = 0
 
-img = [1.0/20] * 196
+img = images[cur]
+for i in range(len(img)):
+    if (img[i] == 1.0/40):
+        img[i] = 1.0/49
+print img
 h('numInputs = 1')
 h.numInputs = len(img)
 h('double img[numInputs]')
@@ -41,7 +45,7 @@ h('nn.input(&img)')
 
 h('access nn.outCells[0].soma')
 
-h.tstop = 80
+h.tstop = 100
 print "About to RUN"
 
 t_vec = h.Vector()
@@ -57,7 +61,7 @@ for i in range(10):
 h.run()
 
 foundWin = False
-threshold = -20
+threshold = 0
 spike_freq = [0] * len(outputs)
 for i in range(len(outputs[0])):
     for j in range(10):
@@ -78,7 +82,6 @@ print "TRUTH: %d " %truth
 print "WINNERS: ",
 print winners
 
-h("print nn.outCells[0].nclist.object(10).weight")
 try:
     input('Exit by pressing a key')
 except: SyntaxError

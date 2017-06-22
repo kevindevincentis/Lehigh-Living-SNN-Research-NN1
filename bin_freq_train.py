@@ -4,8 +4,8 @@ from back_prop import calc_weight_changes
 
 
 def train_network(h):
-    threshold = -20
-    nIters = 10000
+    threshold = 0
+    nIters = 100
     # Load training images and labels
     vals = sio.loadmat('../MNIST/training_values_compressed.mat')
     images = vals['images']
@@ -22,6 +22,11 @@ def train_network(h):
 
     h('nWeights = nn.numNeurons')
 
+    # 2D matrix to store the weights
+    weightVals = [ ([0] * 196) for neuron in range(10) ]
+    for i in range(10):
+        weightVals[i] = list(h.nn.outCells[i].getWeights())
+
     # Create hoc vectors for recording data
     t_vec = h.Vector()
     outputs = list()
@@ -30,7 +35,10 @@ def train_network(h):
 
     # Loop through training images
     for cur in range(nIters):
-        for b in range(1):
+        err = 1
+        lastErr = 0
+        while(abs(err - lastErr) >= .005):
+            lastErr = err
             print "Training image: %d" %cur
 
             # input the image to the network
@@ -39,7 +47,7 @@ def train_network(h):
 
             h('nn.input(&img)')
 
-            h.tstop = 80
+            h.tstop = 100
 
             t_vec.record(h._ref_t)
 
@@ -58,25 +66,30 @@ def train_network(h):
                         spike_freq[j] += 1.0/(h.tstop * 40)
 
             # Calculate the updates to the weights
-            updates = train(spike_freq, labels[cur], int(h.nn.numNeurons), images[cur])
+            (updates, err) = train(spike_freq, labels[cur], int(h.nn.numNeurons), images[cur])
 
             # Update the weights of the network
-            updateNeurons(h, updates)
+            updateNeurons(h, updates, weightVals)
 
 
 def train(outputs, truth, nWeights, img):
     # Compute the truth values based on "Perfect" scenarios
     truths = [0] * 10
-    truths[truth] = .31
+    truths[truth] = .2
+    outs = list()
+    for k in outputs:
+        outs.append(k*3200)
+    print outs
 
     return calc_weight_changes(outputs, truths, img)
 
 # Update the weight values in the network
-def updateNeurons(h, updates):
+def updateNeurons(h, updates, weightVals):
     h('double update[nWeights]')
     for i in range(len(updates)):
         h.k = i
 
         for j in range(int(h.nn.numNeurons)):
-            h.update[j] = updates[i][j]
-        h('nn.outCells[k].updateWeights(&update)')
+            weightVals[i][j] += updates[i][j]
+            h.update[j] = weightVals[i][j]
+        h('nn.outCells[k].setWeights(&update)')

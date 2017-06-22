@@ -3,8 +3,9 @@
 def calc_weight_changes(outputs, truths, inputs):
     LEARNING_RATE = 10
     nWeights = 196
-    print calculate_total_error(outputs, truths)
-    return train(outputs, truths, inputs, nWeights, LEARNING_RATE)
+    err = calculate_total_error(outputs, truths)
+    print err
+    return (train(outputs, truths, inputs, nWeights, LEARNING_RATE), err)
 
 def train(outputs, truths, inputs, nWeights, LEARNING_RATE):
     nNeurons = len(outputs)
@@ -20,22 +21,23 @@ def train(outputs, truths, inputs, nWeights, LEARNING_RATE):
         if outputs[i] == best_freq: modify.add(i)
 
     print modify
-    
+
     for o in range(nNeurons):
-        if (o in modify):
+        # if (o in modify):
             pd_errors_wrt_output_neuron_total_net_input[o] = calculate_pd_error_wrt_total_net_input(truths[o], outputs[o])
 
 
     for o in range(nNeurons):
-        if o in modify:
+        # if o in modify:
             for w_ho in range(nWeights):
 
                 inp = inputs[w_ho]
-                if (inp > 1.0/50): inp = 0.1
+                if (inp > 1.0/90): inp = 0.1
                 else: inp = 0
                 pd_error_wrt_weight = pd_errors_wrt_output_neuron_total_net_input[o] * inp
 
                 weightDetlas[o][w_ho] -= LEARNING_RATE * pd_error_wrt_weight
+                # print weightDetlas[o][w_ho]
 
     return weightDetlas
 

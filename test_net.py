@@ -8,7 +8,7 @@ objref nn
 nn = new fullLayer(14*14)''')
 
 # Load in the testing images and labels
-vals = sio.loadmat('../MNIST/testing_values_compressed.mat')
+vals = sio.loadmat('../MNIST/training_values_compressed.mat')
 images = vals['images']
 imgLen = len(images[0])
 labels = vals['labels']
@@ -36,7 +36,7 @@ h('double img[numInputs]')
 wins = 0.0
 # Set up a confusion matrix to keep track of performance
 confusion = [ ([0] * 10) for neuron in range(10) ]
-nTrials = 1000
+nTrials = 100
 # Begin looping through the testing images
 for cur in range(nTrials):
     # Give the input image to the network
@@ -45,7 +45,7 @@ for cur in range(nTrials):
 
     h('nn.input(&img)')
 
-    h.tstop = 80
+    h.tstop = 100
 
     # Set up recording vectors to look at outputs
     t_vec = h.Vector()
@@ -58,11 +58,12 @@ for cur in range(nTrials):
     for i in range(10):
         outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
 
+    h('access nn.outCells[0].soma')
     # Run simulation
     h.run()
 
     # Extract results from the output cells
-    threshold = -20
+    threshold = 0
     spike_freq = [0] * len(outputs)
     for i in range(len(outputs[0])):
         done = True
