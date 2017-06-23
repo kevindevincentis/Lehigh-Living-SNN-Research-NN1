@@ -5,7 +5,7 @@ from back_prop import calc_weight_changes
 
 def train_network(h):
     threshold = 0
-    nIters = 100
+    nIters = 10000
     # Load training images and labels
     vals = sio.loadmat('../MNIST/training_values_compressed.mat')
     images = vals['images']

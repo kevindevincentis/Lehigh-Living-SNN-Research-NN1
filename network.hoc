@@ -55,14 +55,14 @@ proc init() {
     }
 
     // Create inhibitory connections in the output layer
-    // for cur = 0, nDigits-1 {
-    //     for dest = 0, nDigits-1 {
-    //         if (cur == dest) {continue}
-    //         outCells[dest].soma outSyn[cur*nDigits + dest] = new ExpSyn(0)
-    //         outSyn[cur*nDigits + dest].e = e_inhibit
-    //         outCells[cur].soma outCells[dest].Inclist.append(new NetCon(&v(1), outSyn[cur*dest + dest], -60, 1, 0.5))
-    //     }
-    // }
+    for cur = 0, nDigits-1 {
+        for dest = 0, nDigits-1 {
+            if (cur == dest) {continue}
+            outCells[dest].soma outSyn[cur*nDigits + dest] = new ExpSyn(0)
+            outSyn[cur*nDigits + dest].e = e_inhibit
+            outCells[cur].soma outCells[dest].Inclist.append(new NetCon(&v(1), outSyn[cur*dest + dest], -60, 1, 0.5))
+        }
+    }
 
 }
 
