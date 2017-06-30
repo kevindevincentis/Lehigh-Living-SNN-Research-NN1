@@ -37,7 +37,7 @@ def train_network(h):
     outputs = [0] * 10
     # Loop through training images
     for cur in range(nIters):
-        err = 100
+        err = 1
         lastErr = 0
         while(abs(err - lastErr) >= .5):
             lastErr = err
@@ -49,7 +49,7 @@ def train_network(h):
 
             h('nn.input(&img)')
 
-            h.tstop = 100
+            h.tstop = 80
 
             t_vec.record(h._ref_t)
 
@@ -78,7 +78,7 @@ def train_network(h):
 def train(outputs, truth, nWeights, img):
     # Compute the truth values based on "Perfect" scenarios
     truths = [0] * 10
-    truths[truth] = 8
+    truths[truth] = 2
 
     return calc_weight_changes(outputs, truths, img)
 

@@ -18,7 +18,7 @@ h('nWeights = nn.numNeurons')
 h('double update[nWeights]')
 h('k = 0')
 
-weights = [([0.0005] * 196) for neuron in range(10)]
+# weights = [([0.0008] * 196) for neuron in range(10)]
 for i in range(len(weights)):
     h.k = i
 
@@ -28,10 +28,7 @@ for i in range(len(weights)):
 
 cur = 0
 
-img = [1.0/100] * 196
-for i in range(30):
-    img[i] = 1.0/60
-print img
+img = images[0]
 h('numInputs = 1')
 h.numInputs = len(img)
 h('double img[numInputs]')
@@ -45,7 +42,7 @@ h('nn.input(&img)')
 
 h('access nn.outCells[0].soma')
 
-h.tstop = 100
+h.tstop = 80
 print "About to RUN"
 
 t_vec = h.Vector()

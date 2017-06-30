@@ -8,7 +8,7 @@ objref nn
 nn = new fullLayer(14*14)''')
 
 # Load in the testing images and labels
-vals = sio.loadmat('../MNIST/training_values_compressed.mat')
+vals = sio.loadmat('../MNIST/testing_values_compressed.mat')
 images = vals['images']
 imgLen = len(images[0])
 labels = vals['labels']
