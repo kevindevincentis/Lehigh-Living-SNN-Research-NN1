@@ -1,9 +1,10 @@
 # Code adpated from https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/
 
 def calc_weight_changes(outputs, truths, inputs):
-    LEARNING_RATE = 10
+    LEARNING_RATE = .001
     nWeights = 196
     err = calculate_total_error(outputs, truths)
+    print outputs
     print err
     return (train(outputs, truths, inputs, nWeights, LEARNING_RATE), err)
 
@@ -32,12 +33,12 @@ def train(outputs, truths, inputs, nWeights, LEARNING_RATE):
             for w_ho in range(nWeights):
 
                 inp = inputs[w_ho]
-                if (inp > 1.0/90): inp = 0.1
+                if (inp > 1.0/90): inp = 1
                 else: inp = 0
                 pd_error_wrt_weight = pd_errors_wrt_output_neuron_total_net_input[o] * inp
 
                 weightDetlas[o][w_ho] -= LEARNING_RATE * pd_error_wrt_weight
-                # print weightDetlas[o][w_ho]
+                # if weightDetlas[o][w_ho] != 0: print weightDetlas[o][w_ho]
 
     return weightDetlas
 

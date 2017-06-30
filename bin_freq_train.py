@@ -5,7 +5,7 @@ from back_prop import calc_weight_changes
 
 def train_network(h):
     threshold = 0
-    nIters = 10000
+    nIters = 1000
     # Load training images and labels
     vals = sio.loadmat('../MNIST/training_values_compressed.mat')
     images = vals['images']
@@ -29,15 +29,17 @@ def train_network(h):
 
     # Create hoc vectors for recording data
     t_vec = h.Vector()
-    outputs = list()
-    for i in range(10):
-        outputs.append(h.Vector())
+    outputs = [0] * 10
+    # for i in range(10):
+    #     outputs.append(h.Vector())
 
+    h("objref outputCounts[10]")
+    outputs = [0] * 10
     # Loop through training images
     for cur in range(nIters):
         err = 1
         lastErr = 0
-        while(abs(err - lastErr) >= .005):
+        while(abs(err - lastErr) >= .5):
             lastErr = err
             print "Training image: %d" %cur
 
@@ -52,21 +54,22 @@ def train_network(h):
             t_vec.record(h._ref_t)
 
             # begin recording the output neurons
+            h('z = 0')
             for i in range(10):
-                outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
+                h.z = i
+                # outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
+                h('nn.outCells[z].soma outputCounts[z] = new APCount(0.5)')
+                h.outputCounts[i].thresh = threshold
 
             # Run simulation
             h.run()
 
             # Extract results from the output cells
-            spike_freq = [0] * len(outputs)
-            for i in range(len(outputs[0])):
-                for j in range(10):
-                    if outputs[j][i] >= threshold:
-                        spike_freq[j] += 1.0/(h.tstop * 40)
+            for i in range(len(outputs)):
+                outputs[i] = h.outputCounts[i].n
 
             # Calculate the updates to the weights
-            (updates, err) = train(spike_freq, labels[cur], int(h.nn.numNeurons), images[cur])
+            (updates, err) = train(outputs, labels[cur], int(h.nn.numNeurons), images[cur])
 
             # Update the weights of the network
             updateNeurons(h, updates, weightVals)
@@ -75,11 +78,7 @@ def train_network(h):
 def train(outputs, truth, nWeights, img):
     # Compute the truth values based on "Perfect" scenarios
     truths = [0] * 10
-    truths[truth] = .2
-    outs = list()
-    for k in outputs:
-        outs.append(k*3200)
-    print outs
+    truths[truth] = 8
 
     return calc_weight_changes(outputs, truths, img)
 

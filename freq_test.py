@@ -18,6 +18,7 @@ h('nWeights = nn.numNeurons')
 h('double update[nWeights]')
 h('k = 0')
 
+weights = [([0.0005] * 196) for neuron in range(10)]
 for i in range(len(weights)):
     h.k = i
 
@@ -27,10 +28,9 @@ for i in range(len(weights)):
 
 cur = 0
 
-img = images[cur]
-for i in range(len(img)):
-    if (img[i] == 1.0/40):
-        img[i] = 1.0/49
+img = [1.0/100] * 196
+for i in range(30):
+    img[i] = 1.0/60
 print img
 h('numInputs = 1')
 h.numInputs = len(img)
@@ -51,30 +51,35 @@ print "About to RUN"
 t_vec = h.Vector()
 t_vec.record(h._ref_t)
 
-outputs = list()
-for i in range(10):
-    outputs.append(h.Vector())
+outputs = [0] * 10
+# for i in range(10):
+#     outputs.append(h.Vector())
+#
 
+h("objref outputCounts[10]")
+
+threshold = 0
+h('z = 0')
 for i in range(10):
-    outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
+    h.z = i
+    # outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
+    h('nn.outCells[z].soma outputCounts[z] = new APCount(0.5)')
+    h.outputCounts[i].thresh = threshold
+
 
 h.run()
 
-foundWin = False
 threshold = 0
-spike_freq = [0] * len(outputs)
-for i in range(len(outputs[0])):
-    for j in range(10):
-        if outputs[j][i] >= threshold:
-            spike_freq[j] += 1
 
-print spike_freq
+for i in range(len(outputs)):
+    outputs[i] = h.outputCounts[i].n
 
-best_freq = max(spike_freq)
+print outputs
 
+best_freq = max(outputs)
 winners = list()
-for i in range(len(spike_freq)):
-    if (spike_freq[i] == best_freq): winners.append(i)
+for i in range(len(outputs)):
+    if (outputs[i] == best_freq): winners.append(i)
 
 truth = labels[cur]
 

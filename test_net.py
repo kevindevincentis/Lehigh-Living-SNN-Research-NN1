@@ -15,7 +15,7 @@ labels = vals['labels']
 labels = labels[0]
 
 # Load in trained weights
-weights = sio.loadmat('./trained_weights.mat')
+weights = sio.loadmat('./trained_weights')
 weights = weights['allWeights']
 print weights
 h('nWeights = nn.numNeurons')
@@ -32,6 +32,7 @@ for i in range(len(weights)):
 h('numInputs = 1')
 h.numInputs = imgLen
 h('double img[numInputs]')
+h("objref outputCounts[10]")
 
 wins = 0.0
 # Set up a confusion matrix to keep track of performance
@@ -51,34 +52,31 @@ for cur in range(nTrials):
     t_vec = h.Vector()
     t_vec.record(h._ref_t)
 
-    outputs = list()
-    for i in range(10):
-        outputs.append(h.Vector())
+    outputs = [0] * 10
 
+    threshold = 0
+    h('z = 0')
     for i in range(10):
-        outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
+        h.z = i
+        # outputs[i].record(h.nn.outCells[i].soma(0.5)._ref_v)
+        h('nn.outCells[z].soma outputCounts[z] = new APCount(0.5)')
+        h.outputCounts[i].thresh = threshold
 
     h('access nn.outCells[0].soma')
     # Run simulation
     h.run()
 
     # Extract results from the output cells
-    threshold = 0
-    spike_freq = [0] * len(outputs)
-    for i in range(len(outputs[0])):
-        done = True
-        for j in range(10):
-            if outputs[j][i] >= threshold:
-                spike_freq[j] += 1
 
-    print spike_freq
+    for i in range(len(outputs)):
+        outputs[i] = h.outputCounts[i].n
 
-    best_freq = max(spike_freq)
+    print outputs
 
-    # Update metrics
+    best_freq = max(outputs)
     winners = list()
-    for i in range(len(spike_freq)):
-        if (spike_freq[i] == best_freq): winners.append(i)
+    for i in range(len(outputs)):
+        if (outputs[i] == best_freq): winners.append(i)
 
     truth = labels[cur]
 
@@ -91,7 +89,7 @@ for cur in range(nTrials):
     print "Wins rate: %d" %(wins)
     print "Trials: %d" %(cur)
 
-    print "Off by: %d" %(spike_freq[winners[0]] - spike_freq[truth])
+    print "Off by: %d" %(outputs[winners[0]] - outputs[truth])
 
     confusion[winners[0]][truth] += 1
 
