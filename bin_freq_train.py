@@ -37,7 +37,7 @@ def train_network(h):
     outputs = [0] * 10
     # Loop through training images
     for cur in range(nIters):
-        err = 1
+        err = 100
         lastErr = 0
         while(abs(err - lastErr) >= .5):
             lastErr = err
