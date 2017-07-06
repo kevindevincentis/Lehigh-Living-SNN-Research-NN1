@@ -1,8 +1,0 @@
-load_file("network.hoc")
-
-objref nn
-nn = new fullLayer(28*28)
-print "DONE!!"
-
-tstop = 300
-run()
